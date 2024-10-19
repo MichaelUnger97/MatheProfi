@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 import de.unger.persistence.dao.ExerciseDao
 import de.unger.persistence.dao.ResultOfExerciseDao
 import de.unger.persistence.dao.ResultOfExercisesDao
@@ -14,7 +16,7 @@ import de.unger.persistence.entity.ResultOfExercisesEntity
 
 
 @Database(
-    version = 20240707,
+    version = 20241019,
     entities = [
         ResultOfExerciseEntity::class,
         ResultOfExercisesEntity::class,
@@ -29,7 +31,6 @@ abstract class HerdenDatabase : RoomDatabase() {
     abstract fun ResultOfExercisesDao(): ResultOfExercisesDao
     abstract fun ExerciseDao(): ExerciseDao
 
-
     object DatabaseBuilder {
         private var INSTANCE: HerdenDatabase? = null
         fun getInstance(context: Context): HerdenDatabase {
@@ -41,12 +42,18 @@ abstract class HerdenDatabase : RoomDatabase() {
             return INSTANCE!!
         }
 
-        private fun buildRoomDB(context: Context) =
-            Room.databaseBuilder(
+        private fun buildRoomDB(context: Context): HerdenDatabase {
+            val MIGRATION_20240707_20241019 = object : Migration(20240707, 20241019) {
+                override fun migrate(db: SupportSQLiteDatabase) {
+                    db.execSQL("ALTER TABLE ExerciseEntity ADD COLUMN result2 INTEGER")
+                }
+            }
+            return Room.databaseBuilder(
                 context.applicationContext,
                 HerdenDatabase::class.java,
                 "HerdenDatabase"
-            ).build()
+            ).addMigrations(MIGRATION_20240707_20241019).build()
+        }
     }
 
 }

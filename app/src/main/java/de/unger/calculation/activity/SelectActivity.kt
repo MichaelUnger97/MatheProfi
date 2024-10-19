@@ -31,6 +31,9 @@ class SelectActivity : AppCompatActivity() {
         binding.results.setOnClickListener {
             startActivity(Intent(this, HighScoreActivity::class.java))
         }
+        binding.mistakes.setOnClickListener {
+            startActivity(Intent(this, MistakesActivity::class.java))
+        }
 
     }
 

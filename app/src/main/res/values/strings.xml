@@ -12,4 +12,5 @@
     <string name="anzahl">%\n richtig</string>
     <string name="zeit">Zeit pro Aufgabe</string>
     <string name="name1">Name</string>
+    <string name="mit_rest_teilen">Mit Rest Teilen</string>
 </resources>

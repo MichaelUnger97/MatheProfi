@@ -33,7 +33,7 @@ class MistakesActivity : AppCompatActivity() {
         val exercises1 =
             if (uncasted is List<*>) uncasted else throw RuntimeException("not castable")
         if (exercises1.all { it is ResultOfExercise }) exercises =
-            exercises1.flatMap { it as List<ResultOfExercise> }.map { it.exercise }
+            (exercises1 as List<ResultOfExercise>).map { it.exercise }
         if (exercises.isEmpty()) finish()
         else {
             exceptionCatcher.catch { calculationService.nextExercise(calculationApp.kindOfExercise!!) }

@@ -50,35 +50,50 @@ class ExerciseActivity : AppCompatActivity() {
                 }
                 val result =
                     if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
-                if (result.correct) {
-                    binding.result.setBackgroundColor(Color.GREEN)
-                    currentNumberOfExercise++
-                    exceptionCatcher.catch {
-                        if (currentNumberOfExercise > calculationApp.numberOfExercises!!) {
-                            calculationService.createResultOfExercises(
-                                exercises,
-                                calculationApp.name!!
-                            )
-                            runOnUiThread { finish() }
-                        } else {
-                            val uncasted =
-                                exceptionCatcher.catch {
-                                    calculationService.nextExercise(
-                                        calculationApp.kindOfExercise!!
-                                    )
-                                }
-                            exercise =
-                                if (uncasted is Exercise) uncasted else throw RuntimeException("Not Castable")
-                        }
+                handleResult(result)
+                exercise.result2?.let {
+                    val uncasted1 = exceptionCatcher.catch {
+                        calculationService.createResult2OfExercise(
+                            exercise,
+                            binding.result.text.toString().toIntOrNull()
+                        )
                     }
-                    binding.result.setText("")
-                    initExercise(exercise)
-                } else binding.result.setBackgroundColor(Color.MAGENTA)
+                    val result1 =
+                        if (uncasted1 is ResultOfExercise) uncasted1 else throw RuntimeException("not castable")
+                    handleResult(result1)
+                }
                 return@setOnKeyListener true
             }
             return@setOnKeyListener super.onKeyUp(keyCode, event)
         }
 
+    }
+
+    private fun handleResult(result: ResultOfExercise) {
+        if (result.correct) {
+            binding.result.setBackgroundColor(Color.rgb(0, 150, 0))
+            currentNumberOfExercise++
+            exceptionCatcher.catch {
+                if (currentNumberOfExercise > calculationApp.numberOfExercises!!) {
+                    calculationService.createResultOfExercises(
+                        exercises,
+                        calculationApp.name!!
+                    )
+                    runOnUiThread { finish() }
+                } else {
+                    val uncasted =
+                        exceptionCatcher.catch {
+                            calculationService.nextExercise(
+                                calculationApp.kindOfExercise!!
+                            )
+                        }
+                    exercise =
+                        if (uncasted is Exercise) uncasted else throw RuntimeException("Not Castable")
+                }
+            }
+            binding.result.setText("")
+            initExercise(exercise)
+        } else binding.result.setBackgroundColor(Color.MAGENTA)
     }
 
     private fun initExercise(exercise: Exercise) {

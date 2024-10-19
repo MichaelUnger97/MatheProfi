@@ -83,6 +83,20 @@ open class CalculationService(
                     exerciseRepository.numberOfExerciseEntities() + 1
                 )
             }
+
+            KindOfExercise.REMAINDER -> {
+                val first = (2..18).random()
+                val second = (2..18).random()
+                val third = (1 until first).random()
+                return Exercise(
+                    first * second + third,
+                    first,
+                    kindOfExercise,
+                    second,
+                    exerciseRepository.numberOfExerciseEntities() + 1,
+                    third
+                )
+            }
         }
     }
 
@@ -93,6 +107,17 @@ open class CalculationService(
                 LocalDateTime.now(),
                 exercise,
                 result == exercise.result
+            )
+        )
+    }
+
+    fun createResult2OfExercise(exercise: Exercise, result: Int?): ResultOfExercise {
+        if (result == null) throw RuntimeException("Kein Ergebnis Eingegeben")
+        return resultOfExerciseRepository.create(
+            ResultOfExercise(
+                LocalDateTime.now(),
+                exercise,
+                result == exercise.result2
             )
         )
     }

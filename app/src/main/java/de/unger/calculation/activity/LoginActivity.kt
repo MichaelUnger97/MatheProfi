@@ -33,6 +33,10 @@ class LoginActivity : AppCompatActivity() {
             calculationApp.kindOfExercise = KindOfExercise.DIVIDE
             startActivity()
         }
+        binding.divide.setOnClickListener {
+            calculationApp.kindOfExercise = KindOfExercise.REMAINDER
+            startActivity()
+        }
     }
 
     private fun startActivity() {

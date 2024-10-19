@@ -11,8 +11,8 @@ android {
         applicationId = "de.unger.calculation"
         minSdk = 28
         targetSdk = 34
-        versionCode = 20240130
-        versionName = "1.0"
+        versionCode = 20241019
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -5,5 +5,6 @@ data class Exercise(
     val secondArgument: Int,
     val kindOfExercise: KindOfExercise,
     val result: Int,
-    val index: Int
+    val index: Int,
+    val result2: Int? = null
 )

@@ -11,5 +11,6 @@ data class ExerciseEntity(
     val kindOfExercise: KindOfExercise,
     val result: Int,
     @PrimaryKey
-    val index: Int
+    val index: Int,
+    val result2: Int?
 )
