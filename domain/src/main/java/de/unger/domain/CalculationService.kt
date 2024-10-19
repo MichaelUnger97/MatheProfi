@@ -86,7 +86,7 @@ open class CalculationService(
 
             KindOfExercise.REMAINDER -> {
                 val first = (2..18).random()
-                val second = (2..18).random()
+                val second = (2..9).random()
                 val third = (1 until first).random()
                 return Exercise(
                     first * second + third,
