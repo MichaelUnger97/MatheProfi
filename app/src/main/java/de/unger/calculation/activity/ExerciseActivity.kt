@@ -3,6 +3,7 @@ package de.unger.calculation.activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import de.unger.calculation.CalculationApp
 import de.unger.calculation.ExceptionCatcher
@@ -10,6 +11,7 @@ import de.unger.calculation.databinding.ExerciseActivityLayoutBinding
 import de.unger.domain.CalculationService
 import de.unger.domain.entities.Exercise
 import de.unger.domain.entities.Exercises
+import de.unger.domain.entities.KindOfExercise
 import de.unger.domain.entities.ResultOfExercise
 
 class ExerciseActivity : AppCompatActivity() {
@@ -40,6 +42,27 @@ class ExerciseActivity : AppCompatActivity() {
         exercise = if (uncasted1 is Exercise) uncasted1 else throw RuntimeException("not castable")
         initExercise(exercise)
         binding.result.requestFocus()
+        if (calculationApp.kindOfExercise == KindOfExercise.REMAINDER) {
+            binding.result.setOnKeyListener { v, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                    val uncasted = exceptionCatcher.catch {
+                        calculationService.createResult2OfExercise(
+                            exercise,
+                            binding.remainder.text.toString().toIntOrNull()
+                        )
+                    }
+                    val result =
+                        if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
+                    if (result.correct) {
+                        nextExercise()
+                    }
+                    return@setOnKeyListener true
+                }
+                return@setOnKeyListener super.onKeyUp(keyCode, event)
+            }
+        } else {
+            binding.remainder.visibility = View.GONE
+        }
         binding.result.setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
                 val uncasted = exceptionCatcher.catch {
@@ -50,18 +73,15 @@ class ExerciseActivity : AppCompatActivity() {
                 }
                 val result =
                     if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
-                handleResult(result)
-                exercise.result2?.let {
-                    val uncasted1 = exceptionCatcher.catch {
-                        calculationService.createResult2OfExercise(
-                            exercise,
-                            binding.result.text.toString().toIntOrNull()
-                        )
+                if (result.correct) {
+                    binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
+                    if (calculationApp.kindOfExercise == KindOfExercise.REMAINDER) {
+                        binding.remainder.requestFocus()
+                    } else {
+                        nextExercise()
                     }
-                    val result1 =
-                        if (uncasted1 is ResultOfExercise) uncasted1 else throw RuntimeException("not castable")
-                    handleResult(result1)
-                }
+                } else binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
+
                 return@setOnKeyListener true
             }
             return@setOnKeyListener super.onKeyUp(keyCode, event)
@@ -69,31 +89,33 @@ class ExerciseActivity : AppCompatActivity() {
 
     }
 
-    private fun handleResult(result: ResultOfExercise) {
-        if (result.correct) {
-            binding.result.setBackgroundColor(Color.rgb(0, 150, 0))
-            currentNumberOfExercise++
-            exceptionCatcher.catch {
-                if (currentNumberOfExercise > calculationApp.numberOfExercises!!) {
-                    calculationService.createResultOfExercises(
-                        exercises,
-                        calculationApp.name!!
-                    )
-                    runOnUiThread { finish() }
-                } else {
-                    val uncasted =
-                        exceptionCatcher.catch {
-                            calculationService.nextExercise(
-                                calculationApp.kindOfExercise!!
-                            )
-                        }
-                    exercise =
-                        if (uncasted is Exercise) uncasted else throw RuntimeException("Not Castable")
-                }
+    private fun nextExercise() {
+        currentNumberOfExercise++
+        exceptionCatcher.catch {
+            if (currentNumberOfExercise > calculationApp.numberOfExercises!!) {
+                calculationService.createResultOfExercises(
+                    exercises,
+                    calculationApp.name!!
+                )
+                runOnUiThread { finish() }
+            } else {
+                val uncasted =
+                    exceptionCatcher.catch {
+                        calculationService.nextExercise(
+                            calculationApp.kindOfExercise!!
+                        )
+                    }
+                exercise =
+                    if (uncasted is Exercise) uncasted else throw RuntimeException("Not Castable")
             }
-            binding.result.setText("")
-            initExercise(exercise)
-        } else binding.result.setBackgroundColor(Color.MAGENTA)
+        }
+        binding.result.setText("")
+        binding.remainder.setText("")
+        initExercise(exercise)
+    }
+
+    private fun handleResult(result: ResultOfExercise) {
+
     }
 
     private fun initExercise(exercise: Exercise) {

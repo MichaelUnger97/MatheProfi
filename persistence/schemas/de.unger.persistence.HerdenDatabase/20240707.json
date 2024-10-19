@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 20240707,
-    "identityHash": "03a669d8562d00667eeb700f4731b61a",
+    "identityHash": "4551a436c2a8665608a43189a7cfc83d",
     "entities": [
       {
         "tableName": "ResultOfExerciseEntity",
@@ -95,7 +95,7 @@
       },
       {
         "tableName": "ExerciseEntity",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`firstArgument` INTEGER NOT NULL, `secondArgument` INTEGER NOT NULL, `kindOfExercise` TEXT NOT NULL, `result` INTEGER NOT NULL, `index` INTEGER NOT NULL, PRIMARY KEY(`index`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`firstArgument` INTEGER NOT NULL, `secondArgument` INTEGER NOT NULL, `kindOfExercise` TEXT NOT NULL, `result` INTEGER NOT NULL, `index` INTEGER NOT NULL, `result2` INTEGER, PRIMARY KEY(`index`))",
         "fields": [
           {
             "fieldPath": "firstArgument",
@@ -126,6 +126,12 @@
             "columnName": "index",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "result2",
+            "columnName": "result2",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -141,7 +147,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '03a669d8562d00667eeb700f4731b61a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4551a436c2a8665608a43189a7cfc83d')"
     ]
   }
 }

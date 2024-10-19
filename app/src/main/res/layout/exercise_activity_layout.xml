@@ -35,16 +35,25 @@
             android:textSize="@dimen/text_big" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/remainder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <EditText
         android:id="@+id/result"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:textSize="40sp"
         android:inputType="number"
         android:autofillHints="result" />
+
+    <EditText
+        android:id="@+id/remainder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        android:inputType="number"
+        android:autofillHints="remainder" />
+
+    <View
+        android:id="@+id/background_for_result"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

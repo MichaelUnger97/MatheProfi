@@ -40,29 +40,45 @@ class MistakesActivity : AppCompatActivity() {
             exercise = exercises.first()
             initExercise(exercise)
         }
+        binding.result.requestFocus()
+        binding.result.setOnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                val uncasted = exceptionCatcher.catch {
+                    calculationService.createResultOfExercise(
+                        exercise,
+                        binding.result.text.toString().toIntOrNull()
+                    )
+                }
+                val result =
+                    if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
+                handleResult(result)
+                exercise.result2?.let {
+                    val uncasted1 = exceptionCatcher.catch {
+                        calculationService.createResult2OfExercise(
+                            exercise,
+                            binding.result.text.toString().toIntOrNull()
+                        )
+                    }
+                    val result1 =
+                        if (uncasted1 is ResultOfExercise) uncasted1 else throw RuntimeException("not castable")
+                    handleResult(result1)
+                }
+                return@setOnKeyListener true
+            }
+            return@setOnKeyListener super.onKeyUp(keyCode, event)
+        }
+
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_ENTER) {
-            val uncasted = exceptionCatcher.catch {
-                calculationService.createResultOfExercise(
-                    exercise,
-                    binding.result.text.toString().toIntOrNull()
-                )
+    private fun handleResult(result: ResultOfExercise) {
+        if (result.correct) {
+            binding.result.setBackgroundColor(Color.rgb(0, 150, 0))
+            currentExerciseNumber++
+            if (exercises.size < currentExerciseNumber) finish()
+            else {
+                initExercise(exercises[currentExerciseNumber])
             }
-            val result =
-                if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
-            if (result.correct) {
-                binding.result.setBackgroundColor(Color.GREEN)
-                currentExerciseNumber++
-                if (exercises.size < currentExerciseNumber) finish()
-                else {
-                    initExercise(exercises[currentExerciseNumber])
-                }
-            } else binding.result.setBackgroundColor(Color.MAGENTA)
-            return true
-        }
-        return super.onKeyDown(keyCode, event)
+        } else binding.result.setBackgroundColor(Color.MAGENTA)
     }
 
     private fun initExercise(exercise: Exercise) {
