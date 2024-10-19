@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activity.SelectActivity"
+    android:orientation="vertical">
+
+
+    <Button
+        android:id="@+id/results"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_big"
+        android:text="@string/ergebnisse" />
+
+    <Button
+        android:id="@+id/mistakes"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_big"
+        android:text="@string/fehler" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/anzahl_aufgaben"
+        android:labelFor="@id/numberOfExercises"
+        android:textSize="@dimen/text_medium" />
+
+    <EditText
+        android:id="@+id/numberOfExercises"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="Anzahl Aufgaben"
+        android:inputType="number"
+        android:textSize="@dimen/text_big" />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_big"
+        android:text="@string/start" />
+
+</LinearLayout>

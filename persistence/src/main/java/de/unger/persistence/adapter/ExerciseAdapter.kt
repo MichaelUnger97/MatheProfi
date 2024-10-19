@@ -1,0 +1,45 @@
+package de.unger.persistence.adapter
+
+import android.content.Context
+import de.unger.domain.entities.Exercise
+import de.unger.domain.port.ExerciseRepository
+import de.unger.persistence.HerdenDatabase
+import de.unger.persistence.entity.ExerciseEntity
+
+class ExerciseAdapter(context: Context) : ExerciseRepository {
+    private val ExerciseDao =
+        HerdenDatabase.DatabaseBuilder.getInstance(context).ExerciseDao()
+    private val exerciseDao = HerdenDatabase.DatabaseBuilder.getInstance(context).ExerciseDao()
+    private fun exerciseToExerciseEntity(exercise: Exercise): ExerciseEntity {
+        return ExerciseEntity(
+            exercise.firstArgument,
+            exercise.secondArgument,
+            exercise.kindOfExercise,
+            exercise.result,
+            exercise.index
+        )
+    }
+
+    private fun exerciseFromExerciseEntity(exerciseEntity: ExerciseEntity): Exercise {
+        return Exercise(
+            exerciseEntity.firstArgument,
+            exerciseEntity.secondArgument,
+            exerciseEntity.kindOfExercise,
+            exerciseEntity.result,
+            exerciseEntity.index
+        )
+    }
+
+    override fun create(exercise: Exercise): Exercise {
+        exerciseDao.insert(exerciseToExerciseEntity(exercise))
+        return exercise
+    }
+
+    override fun findByIndex(index: Int): Exercise {
+        return exerciseFromExerciseEntity(exerciseDao.findByIndex(index))
+    }
+
+    override fun numberOfExerciseEntities(): Int {
+        return exerciseDao.numberOfExerciseEntities()
+    }
+}

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Rechenprofi</string>
+    <string name="name">Name:</string>
+    <string name="plus">Plus</string>
+    <string name="minus">Minus</string>
+    <string name="mal">Mal</string>
+    <string name="geteilt">Geteilt</string>
+    <string name="start">Start</string>
+    <string name="ergebnisse">Highscore</string>
+    <string name="fehler">Fehler</string>
+    <string name="anzahl_aufgaben">Anzahl Aufgaben</string>
+    <string name="anzahl">%\n richtig</string>
+    <string name="zeit">Zeit pro Aufgabe</string>
+    <string name="name1">Name</string>
+</resources>
