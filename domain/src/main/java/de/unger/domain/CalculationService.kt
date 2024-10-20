@@ -147,12 +147,4 @@ open class CalculationService(
         return resultOfExerciseRepository.findMistakes()
     }
 
-    fun findCurrentMistakes(): List<ResultOfExercise> {
-        val lastResult = resultOfExercisesRepository.findLastResult()
-        return if (lastResult == null) emptyList() else resultOfExerciseRepository.findCurrentMistakes(
-            lastResult.startTime,
-            lastResult.endTime
-        )
-    }
-
 }

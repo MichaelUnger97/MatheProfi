@@ -27,7 +27,7 @@ class ExceptionCatcher(
         } catch (ex: Exception) {
             this.setMessage(ex.message.toString())
             activity.runOnUiThread { this.show() }
-            //TODO: ex.printStackTrace()
+            //TODO ex.printStackTrace()
         }
 
     }

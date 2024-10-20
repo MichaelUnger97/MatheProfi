@@ -15,7 +15,7 @@ interface ResultOfExerciseDao {
     @Query("Select * From ResultOfExerciseEntity Where ResultOfExerciseEntity.correct=0 order By ResultOfExerciseEntity.resultDateTime Desc")
     fun findMistakes(): List<ResultOfExerciseEntity>
 
-    @Query("Select * From ResultOfExerciseEntity Where ResultOfExerciseEntity.resultDateTime > :startTime And ResultOfExerciseEntity.resultDateTime < :endTime ")
+    @Query("Select * From ResultOfExerciseEntity Where ResultOfExerciseEntity.correct=0 And ResultOfExerciseEntity.resultDateTime > :startTime And ResultOfExerciseEntity.resultDateTime < :endTime ")
     fun findCurrentMistakes(
         startTime: LocalDateTime,
         endTime: LocalDateTime
