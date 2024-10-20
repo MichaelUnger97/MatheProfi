@@ -8,7 +8,7 @@ import de.unger.persistence.entity.ExerciseEntity
 
 class ExerciseAdapter(context: Context) : ExerciseRepository {
     private val exerciseDao = HerdenDatabase.DatabaseBuilder.getInstance(context).ExerciseDao()
-    private fun exerciseToExerciseEntity(exercise: Exercise): ExerciseEntity {
+    fun exerciseToExerciseEntity(exercise: Exercise): ExerciseEntity {
         return ExerciseEntity(
             exercise.firstArgument,
             exercise.secondArgument,
@@ -19,7 +19,7 @@ class ExerciseAdapter(context: Context) : ExerciseRepository {
         )
     }
 
-    private fun exerciseFromExerciseEntity(exerciseEntity: ExerciseEntity): Exercise {
+    fun exerciseFromExerciseEntity(exerciseEntity: ExerciseEntity): Exercise {
         return Exercise(
             exerciseEntity.firstArgument,
             exerciseEntity.secondArgument,

@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit
 class ExceptionCatcher(
     private val appContext: CalculationApp, val activity: Activity
 ) : AlertDialog(activity) {
-    fun catch(callable: Callable<Any?>): Any? {
+    fun <T> catch(callable: Callable<out T>): T? {
         return try {
             appContext.executorService.submit(
                 callable
@@ -27,7 +27,8 @@ class ExceptionCatcher(
         } catch (ex: Exception) {
             this.setMessage(ex.message.toString())
             activity.runOnUiThread { this.show() }
-            //TODO ex.printStackTrace()
+            ex.printStackTrace()
+            return null
         }
 
     }

@@ -1,22 +1,20 @@
 package de.unger.persistence.adapter
 
 import android.content.Context
-import de.unger.domain.entities.Exercise
 import de.unger.domain.entities.ResultOfExercise
 import de.unger.domain.port.ResultOfExerciseRepository
 import de.unger.persistence.HerdenDatabase
-import de.unger.persistence.entity.ExerciseEntity
 import de.unger.persistence.entity.ResultOfExerciseEntity
 import java.time.LocalDateTime
 
 class ResultOfExerciseAdapter(context: Context) : ResultOfExerciseRepository {
     private val resultOfExerciseDao =
         HerdenDatabase.DatabaseBuilder.getInstance(context).ResultOfExerciseDao()
-    private val exerciseDao = HerdenDatabase.DatabaseBuilder.getInstance(context).ExerciseDao()
+    private val exerciseAdapter = ExerciseAdapter(context)
     private fun resultOfExerciseFromResultOfExerciseEntity(resultOfExerciseEntity: ResultOfExerciseEntity): ResultOfExercise {
         return ResultOfExercise(
             resultOfExerciseEntity.resultDateTime,
-            exerciseFromExerciseEntity(exerciseDao.findByIndex(resultOfExerciseEntity.exerciseIndex)),
+            exerciseAdapter.findByIndex(resultOfExerciseEntity.exerciseIndex),
             resultOfExerciseEntity.correct
         )
     }
@@ -29,15 +27,6 @@ class ResultOfExerciseAdapter(context: Context) : ResultOfExerciseRepository {
         )
     }
 
-    private fun exerciseFromExerciseEntity(exerciseEntity: ExerciseEntity): Exercise {
-        return Exercise(
-            exerciseEntity.firstArgument,
-            exerciseEntity.secondArgument,
-            exerciseEntity.kindOfExercise,
-            exerciseEntity.result,
-            exerciseEntity.index
-        )
-    }
 
     override fun create(resultOfExercise: ResultOfExercise): ResultOfExercise {
         resultOfExerciseDao.insert(resultOfExerciseToResultOfExerciseEntity(resultOfExercise))

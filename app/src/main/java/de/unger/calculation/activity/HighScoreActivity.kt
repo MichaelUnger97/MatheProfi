@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import de.unger.calculation.CalculationApp
 import de.unger.calculation.ExceptionCatcher
 import de.unger.calculation.databinding.HighScoreActivityLayoutBinding
-import de.unger.domain.entities.ResultOfExercises
 
 class HighScoreActivity : AppCompatActivity() {
 
@@ -19,12 +18,11 @@ class HighScoreActivity : AppCompatActivity() {
         val exceptionCatcher = ExceptionCatcher(calculationApp, this)
         binding = HighScoreActivityLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val uncasted =
-            exceptionCatcher.catch { calculationService.findResults(calculationApp.kindOfExercise!!) }
-        val results = if (uncasted is List<*>) uncasted else throw RuntimeException()
-        val resultsOfExercises =
-            if (results.all { it is ResultOfExercises }) results as List<ResultOfExercises> else throw RuntimeException()
-        binding.highScoreList.adapter = HighScoreAdapter(resultsOfExercises)
+
+        exceptionCatcher.catch { calculationService.findResults(calculationApp.kindOfExercise!!) }
+            ?.let {
+                binding.highScoreList.adapter = HighScoreAdapter(it)
+            }
     }
 
 }

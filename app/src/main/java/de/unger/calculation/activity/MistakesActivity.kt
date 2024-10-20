@@ -11,7 +11,6 @@ import de.unger.calculation.databinding.ExerciseActivityLayoutBinding
 import de.unger.domain.CalculationService
 import de.unger.domain.entities.Exercise
 import de.unger.domain.entities.KindOfExercise
-import de.unger.domain.entities.ResultOfExercise
 
 class MistakesActivity : AppCompatActivity() {
 
@@ -28,65 +27,62 @@ class MistakesActivity : AppCompatActivity() {
         exceptionCatcher = ExceptionCatcher(calculationApp, this)
         binding = ExerciseActivityLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val uncasted = exceptionCatcher.catch {
+        exceptionCatcher.catch {
             calculationService.findMistakes()
-        }
-        val exercises1 =
-            if (uncasted is List<*>) uncasted else throw RuntimeException("not castable")
-        if (exercises1.all { it is ResultOfExercise }) exercises =
-            (exercises1 as List<ResultOfExercise>).map { it.exercise }
-                .filter { it.kindOfExercise == calculationApp.kindOfExercise }
-        if (exercises.isEmpty()) finish()
-        else {
-            initExercise(exercises.first())
+        }?.let { resultOfExercises ->
+            exercises = resultOfExercises.map {
+                it.exercise
+            }.filter { it.kindOfExercise == calculationApp.kindOfExercise }
+            if (exercises.isEmpty()) finish()
+            else {
+                initExercise(exercises.first())
+            }
         }
         binding.result.requestFocus()
         if (calculationApp.kindOfExercise == KindOfExercise.REMAINDER) {
-            binding.remainder.setOnKeyListener { v, keyCode, event ->
+            binding.remainder.setOnKeyListener { _, keyCode, event ->
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                    val uncasted = exceptionCatcher.catch {
+                    exceptionCatcher.catch {
                         calculationService.createResult2OfExercise(
                             exercises[currentExerciseNumber],
                             binding.remainder.text.toString().toIntOrNull()
                         )
+                    }?.let {
+                        if (it.correct) {
+                            nextExercise()
+                            binding.result.requestFocus()
+                            binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
+                        } else {
+                            binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
+                        }
+                        return@setOnKeyListener true
                     }
-                    val result =
-                        if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
-                    if (result.correct) {
-                        nextExercise()
-                        binding.result.requestFocus()
-                        binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
-                    } else {
-                        binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
-
-                    }
-                    return@setOnKeyListener true
                 }
                 return@setOnKeyListener super.onKeyUp(keyCode, event)
             }
         } else {
             binding.remainder.visibility = View.GONE
         }
-        binding.result.setOnKeyListener { v, keyCode, event ->
+        binding.result.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                val uncasted = exceptionCatcher.catch {
+                exceptionCatcher.catch {
                     calculationService.createResultOfExercise(
                         exercises[currentExerciseNumber],
                         binding.result.text.toString().toIntOrNull()
                     )
-                }
-                val result =
-                    if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
-                if (result.correct) {
-                    binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
-                    if (calculationApp.kindOfExercise == KindOfExercise.REMAINDER) {
-                        binding.remainder.requestFocus()
-                    } else {
-                        nextExercise()
-                    }
-                } else binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
+                }?.let { result ->
+                    if (result.correct) {
+                        binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
+                        if (calculationApp.kindOfExercise == KindOfExercise.REMAINDER) {
+                            binding.remainder.requestFocus()
+                        } else {
+                            nextExercise()
+                        }
+                    } else binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
 
-                return@setOnKeyListener true
+
+                    return@setOnKeyListener true
+                }
             }
             return@setOnKeyListener super.onKeyUp(keyCode, event)
         }

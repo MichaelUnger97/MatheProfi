@@ -12,7 +12,6 @@ import de.unger.domain.CalculationService
 import de.unger.domain.entities.Exercise
 import de.unger.domain.entities.Exercises
 import de.unger.domain.entities.KindOfExercise
-import de.unger.domain.entities.ResultOfExercise
 
 class ExerciseActivity : AppCompatActivity() {
 
@@ -30,64 +29,62 @@ class ExerciseActivity : AppCompatActivity() {
         exceptionCatcher = ExceptionCatcher(calculationApp, this)
         binding = ExerciseActivityLayoutBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val uncasted = exceptionCatcher.catch {
+        exceptionCatcher.catch {
             calculationService.startExercises(
                 calculationApp.kindOfExercise!!,
                 calculationApp.numberOfExercises!!
             )
+        }?.let {
+            exercises = it
+            exceptionCatcher.catch {
+                calculationService.nextExercise(calculationApp.kindOfExercise!!)
+            }?.let { exercise = it }
         }
-        exercises = if (uncasted is Exercises) uncasted else throw RuntimeException("not castable")
-        val uncasted1 =
-            exceptionCatcher.catch { calculationService.nextExercise(calculationApp.kindOfExercise!!) }
-        exercise = if (uncasted1 is Exercise) uncasted1 else throw RuntimeException("not castable")
         initExercise(exercise)
         binding.result.requestFocus()
         if (calculationApp.kindOfExercise == KindOfExercise.REMAINDER) {
-            binding.remainder.setOnKeyListener { v, keyCode, event ->
+            binding.remainder.setOnKeyListener { _, keyCode, event ->
                 if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                    val uncasted = exceptionCatcher.catch {
+                    exceptionCatcher.catch {
                         calculationService.createResult2OfExercise(
                             exercise,
                             binding.remainder.text.toString().toIntOrNull()
                         )
-                    }
-                    val result =
-                        if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
-                    if (result.correct) {
-                        nextExercise()
-                        binding.result.requestFocus()
-                        binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
-                    } else {
-                        binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
+                    }?.let {
+                        if (it.correct) {
+                            nextExercise()
+                            binding.result.requestFocus()
+                            binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
+                        } else {
+                            binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
 
+                        }
+                        return@setOnKeyListener true
                     }
-                    return@setOnKeyListener true
                 }
                 return@setOnKeyListener super.onKeyUp(keyCode, event)
             }
         } else {
             binding.remainder.visibility = View.GONE
         }
-        binding.result.setOnKeyListener { v, keyCode, event ->
+        binding.result.setOnKeyListener { _, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                val uncasted = exceptionCatcher.catch {
+                exceptionCatcher.catch {
                     calculationService.createResultOfExercise(
                         exercise,
                         binding.result.text.toString().toIntOrNull()
                     )
+                }?.let {
+                    if (it.correct) {
+                        binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
+                        if (calculationApp.kindOfExercise == KindOfExercise.REMAINDER) {
+                            binding.remainder.requestFocus()
+                        } else {
+                            nextExercise()
+                        }
+                    } else binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
+                    return@setOnKeyListener true
                 }
-                val result =
-                    if (uncasted is ResultOfExercise) uncasted else throw RuntimeException("not castable")
-                if (result.correct) {
-                    binding.backgroundForResult.setBackgroundColor(Color.rgb(0, 150, 0))
-                    if (calculationApp.kindOfExercise == KindOfExercise.REMAINDER) {
-                        binding.remainder.requestFocus()
-                    } else {
-                        nextExercise()
-                    }
-                } else binding.backgroundForResult.setBackgroundColor(Color.MAGENTA)
-
-                return@setOnKeyListener true
             }
             return@setOnKeyListener super.onKeyUp(keyCode, event)
         }
@@ -104,14 +101,10 @@ class ExerciseActivity : AppCompatActivity() {
                 )
                 runOnUiThread { finish() }
             } else {
-                val uncasted =
-                    exceptionCatcher.catch {
-                        calculationService.nextExercise(
-                            calculationApp.kindOfExercise!!
-                        )
-                    }
                 exercise =
-                    if (uncasted is Exercise) uncasted else throw RuntimeException("Not Castable")
+                    calculationService.nextExercise(
+                        calculationApp.kindOfExercise!!
+                    )
             }
         }
         binding.result.setText("")
