@@ -14,11 +14,12 @@ interface ResultOfExercisesDao {
 
     @Query(
         "Select * From ResultOfExercisesEntity " +
-                "Where ResultOfExercisesEntity.kindOfExercises=:kindOfExercise " +
+                "Where ResultOfExercisesEntity.kindOfExercises=:kindOfExercise and " +
+                "ResultOfExercisesEntity.easy=:easy " +
                 "Order By 1.0*ResultOfExercisesEntity.mistakes/ResultOfExercisesEntity.exercises  asc," +
                 " ResultOfExercisesEntity.endTime-ResultOfExercisesEntity.startTime asc"
     )
-    fun findResults(kindOfExercise: KindOfExercise): List<ResultOfExercisesEntity>
+    fun findResults(kindOfExercise: KindOfExercise, easy: Boolean): List<ResultOfExercisesEntity>
 
     @Query(
         "Select * From ResultOfExercisesEntity Where " +

@@ -13,4 +13,8 @@
     <string name="zeit">Zeit pro Aufgabe</string>
     <string name="name1">Name</string>
     <string name="mit_rest_teilen">Mit Rest Teilen</string>
+    <string name="schwer">schwer</string>
+    <string name="leicht">leicht</string>
+    <string name="schwer1">SCHWER</string>
+    <string name="leicht1">LEICHT</string>
 </resources>

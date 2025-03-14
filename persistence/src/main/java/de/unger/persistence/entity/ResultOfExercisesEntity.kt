@@ -4,7 +4,7 @@ import androidx.room.Entity
 import de.unger.domain.entities.KindOfExercise
 import java.time.LocalDateTime
 
-@Entity(primaryKeys = ["index", "kindOfExercises"])
+@Entity(primaryKeys = ["index", "kindOfExercises", "easy"])
 data class ResultOfExercisesEntity(
     val index: Int,
     val kindOfExercises: KindOfExercise,
@@ -12,5 +12,6 @@ data class ResultOfExercisesEntity(
     val startTime: LocalDateTime,
     val endTime: LocalDateTime,
     val mistakes: Int,
-    val name: String
+    val name: String,
+    val easy: Boolean
 )

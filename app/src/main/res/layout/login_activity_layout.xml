@@ -28,6 +28,15 @@
             android:inputType="textPersonName" />
 
         <Button
+            android:id="@+id/difficulty"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_big"
+            android:background="#0f0"
+            android:text="@string/leicht" />
+
+        <Button
             android:id="@+id/plus"
             android:layout_marginTop="20dp"
             android:layout_width="match_parent"

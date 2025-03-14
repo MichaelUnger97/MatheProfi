@@ -32,12 +32,16 @@ class ExerciseActivity : AppCompatActivity() {
         exceptionCatcher.catch {
             calculationService.startExercises(
                 calculationApp.kindOfExercise!!,
-                calculationApp.numberOfExercises!!
+                calculationApp.numberOfExercises!!,
+                calculationApp.easy
             )
         }?.let {
             exercises = it
             exceptionCatcher.catch {
-                calculationService.nextExercise(calculationApp.kindOfExercise!!)
+                calculationService.nextExercise(
+                    calculationApp.kindOfExercise!!,
+                    calculationApp.easy
+                )
             }?.let { exercise = it }
         }
         initExercise(exercise)
@@ -103,7 +107,8 @@ class ExerciseActivity : AppCompatActivity() {
             } else {
                 exercise =
                     calculationService.nextExercise(
-                        calculationApp.kindOfExercise!!
+                        calculationApp.kindOfExercise!!,
+                        calculationApp.easy
                     )
             }
         }

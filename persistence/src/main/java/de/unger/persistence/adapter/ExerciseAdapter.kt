@@ -15,6 +15,7 @@ class ExerciseAdapter(context: Context) : ExerciseRepository {
             exercise.kindOfExercise,
             exercise.result,
             exercise.index,
+            exercise.easy,
             exercise.result2
         )
     }
@@ -26,6 +27,7 @@ class ExerciseAdapter(context: Context) : ExerciseRepository {
             exerciseEntity.kindOfExercise,
             exerciseEntity.result,
             exerciseEntity.index,
+            exerciseEntity.easy,
             exerciseEntity.result2
         )
     }

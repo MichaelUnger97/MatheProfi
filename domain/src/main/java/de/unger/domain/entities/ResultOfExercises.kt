@@ -9,5 +9,6 @@ data class ResultOfExercises(
     val startTime: LocalDateTime,
     val endTime: LocalDateTime,
     val mistakes: Int,
-    val name: String
+    val name: String,
+    val easy: Boolean
 )

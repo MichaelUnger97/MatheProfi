@@ -16,29 +16,36 @@ open class CalculationService(
     private val resultOfExercisesRepository: ResultOfExercisesRepository,
     private val exerciseRepository: ExerciseRepository
 ) {
-    fun startExercises(kindOfExercises: KindOfExercise, numberOfExercises: Int): Exercises {
-        return Exercises(kindOfExercises, numberOfExercises, LocalDateTime.now())
+    fun startExercises(
+        kindOfExercises: KindOfExercise,
+        numberOfExercises: Int,
+        easy: Boolean
+    ): Exercises {
+        return Exercises(kindOfExercises, numberOfExercises, LocalDateTime.now(), easy)
     }
 
-    fun nextExercise(kindOfExercise: KindOfExercise): Exercise {
-        return exerciseRepository.create(getNextExercise(kindOfExercise))
+    fun nextExercise(kindOfExercise: KindOfExercise, easy: Boolean): Exercise {
+        return exerciseRepository.create(getNextExercise(kindOfExercise, easy))
     }
 
-    private fun getNextExercise(kindOfExercise: KindOfExercise): Exercise {
+    private fun getNextExercise(kindOfExercise: KindOfExercise, easy: Boolean): Exercise {
         when (kindOfExercise) {
             KindOfExercise.PLUS -> {
                 var first: Int
                 var second: Int
+                val range = if (easy) 2..99 else 101..999
+                val result = if (easy) 99 else 999
                 do {
-                    first = (2..99).random()
-                    second = (2..99).random()
-                } while (first + second > 99)
+                    first = range.random()
+                    second = range.random()
+                } while (first + second > result)
                 return Exercise(
                     first,
                     second,
                     kindOfExercise,
                     first + second,
-                    exerciseRepository.numberOfExerciseEntities() + 1
+                    exerciseRepository.numberOfExerciseEntities() + 1,
+                    easy
                 )
 
             }
@@ -46,47 +53,55 @@ open class CalculationService(
             KindOfExercise.MINUS -> {
                 var first: Int
                 var second: Int
+                val range = if (easy) 2..99 else 101..999
+                val result = if (easy) 1 else 101
                 do {
-                    first = (3..99).random()
-                    second = (2..98).random()
-                } while (first - second < 1)
+                    first = range.random()
+                    second = range.random()
+                } while (first - second < result)
                 return Exercise(
                     first,
                     second,
                     kindOfExercise,
                     first - second,
-                    exerciseRepository.numberOfExerciseEntities() + 1
+                    exerciseRepository.numberOfExerciseEntities() + 1,
+                    easy
                 )
 
             }
 
             KindOfExercise.MULTIPLY -> {
 
-                val first = (2..9).random()
-                val second = (2..9).random()
+                val range = if (easy) 2..9 else 11..19
+                val first = range.random()
+                val second = range.random()
                 return Exercise(
                     first,
                     second, kindOfExercise,
                     first * second,
-                    exerciseRepository.numberOfExerciseEntities() + 1
+                    exerciseRepository.numberOfExerciseEntities() + 1,
+                    easy
                 )
             }
 
             KindOfExercise.DIVIDE -> {
-                val first = (2..9).random()
-                val second = (2..9).random()
+                val range = if (easy) 2..9 else 11..19
+                val first = range.random()
+                val second = range.random()
                 return Exercise(
                     first * second,
                     first,
                     kindOfExercise,
                     second,
-                    exerciseRepository.numberOfExerciseEntities() + 1
+                    exerciseRepository.numberOfExerciseEntities() + 1,
+                    easy
                 )
             }
 
             KindOfExercise.REMAINDER -> {
-                val first = (2..18).random()
-                val second = (2..9).random()
+                val range = if (easy) 2..9 else 11..19
+                val first = range.random()
+                val second = range.random()
                 val third = (1 until first).random()
                 return Exercise(
                     first * second + third,
@@ -94,6 +109,7 @@ open class CalculationService(
                     kindOfExercise,
                     second,
                     exerciseRepository.numberOfExerciseEntities() + 1,
+                    easy,
                     third
                 )
             }
@@ -122,13 +138,16 @@ open class CalculationService(
         )
     }
 
-    fun findResults(kindOfExercise: KindOfExercise) =
-        resultOfExercisesRepository.findResults(kindOfExercise)
+    fun findResults(kindOfExercise: KindOfExercise, easy: Boolean) =
+        resultOfExercisesRepository.findResults(kindOfExercise, easy)
 
     fun createResultOfExercises(exercises: Exercises, name: String): ResultOfExercises {
         return resultOfExercisesRepository.create(
             ResultOfExercises(
-                resultOfExercisesRepository.findResults(exercises.kindOfExercises).size + 1,
+                resultOfExercisesRepository.findResults(
+                    exercises.kindOfExercises,
+                    exercises.easy
+                ).size + 1,
                 exercises.kindOfExercises,
                 exercises.numberOfExercises,
                 exercises.startTime,
@@ -138,7 +157,8 @@ open class CalculationService(
                     LocalDateTime.now()
                 )
                     .count { resultOfExercise -> !resultOfExercise.correct },
-                name
+                name,
+                exercises.easy
             )
         )
     }

@@ -19,7 +19,8 @@ class ResultOfExercisesAdapter(context: Context) : ResultOfExercisesRepository {
             resultOfExercisesEntity.startTime,
             resultOfExercisesEntity.endTime,
             resultOfExercisesEntity.mistakes,
-            resultOfExercisesEntity.name
+            resultOfExercisesEntity.name,
+            resultOfExercisesEntity.easy
         )
     }
 
@@ -31,7 +32,8 @@ class ResultOfExercisesAdapter(context: Context) : ResultOfExercisesRepository {
             resultOfExercises.startTime,
             resultOfExercises.endTime,
             resultOfExercises.mistakes,
-            resultOfExercises.name
+            resultOfExercises.name,
+            resultOfExercises.easy
         )
     }
 
@@ -40,8 +42,11 @@ class ResultOfExercisesAdapter(context: Context) : ResultOfExercisesRepository {
         return resultOfExercises
     }
 
-    override fun findResults(kindOfExercise: KindOfExercise): List<ResultOfExercises> {
-        return resultOfExercisesDao.findResults(kindOfExercise)
+    override fun findResults(
+        kindOfExercise: KindOfExercise,
+        easy: Boolean
+    ): List<ResultOfExercises> {
+        return resultOfExercisesDao.findResults(kindOfExercise, easy)
             .map { resultOfExercisesFromResultOfExercisesEntity(it) }
     }
 

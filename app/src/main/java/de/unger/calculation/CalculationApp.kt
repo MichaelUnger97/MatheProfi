@@ -9,6 +9,7 @@ class CalculationApp : Application() {
     var name: String? = null
     var kindOfExercise: KindOfExercise? = null
     var numberOfExercises: Int? = null
+    var easy = true
     val executorService = Executors.newFixedThreadPool(3)!!
     lateinit var calculationService: CalculationService
     override fun onCreate() {
