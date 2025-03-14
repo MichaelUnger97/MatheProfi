@@ -8,7 +8,7 @@
     tools:context=".activity.ExerciseActivity"
     android:orientation="vertical">
 
-    <TextView
+    <Button
         android:id="@+id/difficulty"
         android:layout_margin="5dp"
         android:layout_width="match_parent"
